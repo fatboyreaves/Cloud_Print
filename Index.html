@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cloud Print Mesh™ – AI-Driven Cloud Print Platform</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-alt: #020819;
+      --card: #020617;
+      --accent: #236bff;
+      --accent-soft: rgba(35, 107, 255, 0.16);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --border: #1e293b;
+      --highlight: #1cc5c0;
+      --danger: #f97373;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.75);
+      --max-width: 1120px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      background: radial-gradient(circle at top, #020617 0%, #020617 50%, #000 100%);
+      color: var(--text);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .nav {
+      border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(16px);
+      background: linear-gradient(to right, rgba(2, 6, 23, 0.92), rgba(15, 23, 42, 0.92));
+    }
+
+    .nav-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #38bdf8 0, #236bff 35%, #1cc5c0 70%, #020617 100%);
+      box-shadow: 0 0 24px rgba(56, 189, 248, 0.5);
+    }
+
+    .logo-text {
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      font-size: 14px;
+      text-transform: uppercase;
+      color: #e2e8f0;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 14px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--text);
+      transition: all 0.16s ease-out;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #4f46e5);
+      border-color: rgba(148, 163, 184, 0.4);
+      box-shadow: 0 12px 30px rgba(37, 99, 235, 0.45);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(37, 99, 235, 0.6);
+    }
+
+    .btn-ghost {
+      border-color: rgba(148, 163, 184, 0.45);
+      background: rgba(15, 23, 42, 0.85);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(15, 23, 42, 0.95);
+      border-color: rgba(148, 163, 184, 0.7);
+    }
+
+    main {
+      flex: 1;
+    }
+
+    .section {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 32px 20px 40px;
+    }
+
+    .hero {
+      padding-top: 48px;
+      padding-bottom: 48px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 40px;
+      align-items: center;
+    }
+
+    @media (max-width: 880px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 14px;
+    }
+
+    .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25);
+    }
+
+    .hero-title {
+      font-size: clamp(32px, 4vw, 44px);
+      line-height: 1.1;
+      margin: 0 0 14px;
+      letter-spacing: -0.03em;
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, #38bdf8, #6366f1, #22c55e);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 520px;
+      line-height: 1.5;
+      margin-bottom: 22px;
+    }
+
+    .hero-cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .hero-footnote {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .hero-metric-row {
+      margin-top: 22px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .hero-metric {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .hero-metric strong {
+      font-size: 18px;
+      color: var(--highlight);
+    }
+
+    .hero-card {
+      background: radial-gradient(circle at top, rgba(37, 99, 235, 0.2), rgba(15, 23, 42, 0.96));
+      border-radius: var(--radius-xl);
+      padding: 18px 18px 14px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 10% 0, rgba(56, 189, 248, 0.18), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .hero-card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      gap: 10px;
+    }
+
+    .hero-card-title {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #e5e7eb;
+    }
+
+    .hero-code {
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 11px;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 12px;
+      padding: 10px 12px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      color: #cbd5f5;
+      line-height: 1.5;
+      max-height: 200px;
+      overflow: auto;
+      white-space: pre;
+    }
+
+    .hero-status {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .hero-status span strong {
+      color: var(--highlight);
+    }
+
+    .section-heading {
+      font-size: 22px;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 640px;
+      margin-bottom: 22px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    @media (max-width: 840px) {
+      .grid-2 {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .card {
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 1));
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(148, 163, 184, 0.32);
+      padding: 18px 18px 16px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.7);
+    }
+
+    .card h3 {
+      font-size: 16px;
+      margin: 0 0 6px;
+    }
+
+    .card p {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0 0 10px;
+    }
+
+    .card ul {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 13px;
+      color: var(--muted);
+      display: grid;
+      gap: 4px;
+    }
+
+    .pill-small {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(22, 163, 74, 0.12);
+      color: #bbf7d0;
+      font-size: 11px;
+    }
+
+    .ascii-diagram {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 11px;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 12px;
+      padding: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      color: #cbd5f5;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    @media (max-width: 840px) {
+      .features-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .feature-item h3 {
+      font-size: 15px;
+      margin: 0 0 6px;
+    }
+
+    .feature-item p {
+      font-size: 13px;
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .pricing {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    @media (max-width: 1024px) {
+      .pricing {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .pricing {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .pricing-card {
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.15), rgba(15, 23, 42, 0.98));
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      padding: 16px 16px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 16px 36px rgba(15, 23, 42, 0.9);
+    }
+
+    .pricing-card.highlight {
+      border-color: rgba(37, 99, 235, 0.95);
+      box-shadow: 0 20px 45px rgba(37, 99, 235, 0.7);
+      position: relative;
+    }
+
+    .pricing-card.highlight::before {
+      content: "Most Popular";
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(37, 99, 235, 0.16);
+      color: #bfdbfe;
+    }
+
+    .pricing-name {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #e5e7eb;
+      margin-bottom: 4px;
+    }
+
+    .pricing-price {
+      font-size: 22px;
+      margin-bottom: 2px;
+    }
+
+    .pricing-meta {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .pricing-card ul {
+      margin: 0 0 12px;
+      padding-left: 16px;
+      font-size: 12px;
+      color: var(--muted);
+      display: grid;
+      gap: 4px;
+    }
+
+    .pricing-cta {
+      margin-top: auto;
+    }
+
+    .cta-section {
+      text-align: center;
+      margin-top: 10px;
+      padding: 26px 20px 40px;
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: radial-gradient(circle at top, rgba(37, 99, 235, 0.25), rgba(15, 23, 42, 1));
+      box-shadow: var(--shadow-soft);
+    }
+
+    .cta-section h2 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-size: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .cta-section p {
+      margin-top: 0;
+      margin-bottom: 18px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .footer {
+      border-top: 1px solid rgba(148, 163, 184, 0.2);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .footer-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 12px 20px 18px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- NAV -->
+  <header class="nav">
+    <div class="nav-inner">
+      <div class="nav-left">
+        <div class="logo-mark"></div>
+        <div class="logo-text">Cloud Print Mesh</div>
+      </div>
+      <nav class="nav-links">
+        <a href="#how-it-works">How it works</a>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#demo">Demo</a>
+      </nav>
+      <div class="nav-right">
+        <a href="#pricing" class="btn btn-ghost">View pricing</a>
+        <a href="#demo" class="btn btn-primary">Book a demo</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+    <!-- HERO -->
+    <section class="section hero" id="top">
+      <div>
+        <div class="pill">
+          <span class="pill-dot"></span>
+          <span>AI-driven cloud print platform</span>
+        </div>
+        <h1 class="hero-title">
+          The future of <span>warehouse label printing.</span>
+        </h1>
+        <p class="hero-subtitle">
+          Replace print servers, VPN tunnels, BarTender licensing, and manual ZPL with a single
+          cloud-native platform. AI-generated labels, Cloudflare edge routing, and sub-second prints
+          to any Zebra printer on the planet.
+        </p>
+        <div class="hero-cta">
+          <a href="#demo" class="btn btn-primary">Book a live demo</a>
+          <a href="#pricing" class="btn btn-ghost">See pricing</a>
+        </div>
+        <div class="hero-footnote">
+          No hardware changes. No VPN. Plug in LMG, connect printers, start printing.
+        </div>
+        <div class="hero-metric-row">
+          <div class="hero-metric">
+            <strong>0</strong>
+            <span>Print servers required</span>
+          </div>
+          <div class="hero-metric">
+            <strong>300–500ms</strong>
+            <span>Typical label round-trip</span>
+          </div>
+          <div class="hero-metric">
+            <strong>100%</strong>
+            <span>End-to-end job visibility</span>
+          </div>
+        </div>
+      </div>
+
+      <aside class="hero-card" aria-label="Example print flow">
+        <div class="hero-card-inner">
+          <div class="hero-card-header">
+            <div>
+              <div class="hero-card-title">Live Print Flow</div>
+              <div style="font-size:11px;color:var(--muted);">
+                AI template → Worker → LMG → Zebra
+              </div>
+            </div>
+            <div class="badge">
+              <span style="width:7px;height:7px;border-radius:999px;background:#22c55e;"></span>
+              Realtime
+            </div>
+          </div>
+          <div class="hero-code">
+AI: "4×6 shipping label with order ID, Code128, SKU, and address."
+
+Worker:
+  - Generate ZPL via AI
+  - Validate + render preview
+  - Route to: ATL-DOOR3 / ZPL-4x6-1
+
+LMG (ATL-DOOR3):
+  - WebSocket: connected
+  - Printer: online
+  - Sent ZPL payload (212 bytes)
+  - Status: PRINTED (238ms)
+
+Dashboard:
+  JOB-92341 • SO-12345 • ATL • Printed ✅
+          </div>
+          <div class="hero-status">
+            <span>Edge: <strong>Cloudflare</strong> • Region: IAD</span>
+            <span>Printer: <strong>Zebra ZD420</strong></span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- PROBLEM / OPPORTUNITY -->
+    <section class="section" id="how-it-works">
+      <h2 class="section-heading">Print infrastructure is stuck in 2004.</h2>
+      <p class="section-subtitle">
+        Most warehouses still rely on fragile Windows print servers, VPN tunnels, and manual ZPL scripts.
+        Downtime is common, costs are high, and nobody has real visibility into what actually printed.
+      </p>
+      <div class="grid-2">
+        <div class="card">
+          <div class="pill-small">The old way</div>
+          <h3>Legacy print stacks are fragile and expensive.</h3>
+          <p>Every new warehouse or printer adds more cost and more risk.</p>
+          <ul>
+            <li>Print servers, Citrix, VPN, drivers, firmware quirks</li>
+            <li>Proprietary label designers and per-printer licensing</li>
+            <li>Manual ZPL tweaks and offsets for each printer</li>
+            <li>No real-time visibility; support tickets drive diagnosis</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="pill-small">The new way</div>
+          <h3>Cloud-native, AI-driven print mesh.</h3>
+          <p>One global architecture for every warehouse, every printer, every label.</p>
+          <ul>
+            <li>AI generates and validates ZPL templates for you</li>
+            <li>Cloudflare Workers route jobs at the edge</li>
+            <li>LMG gives secure outbound-only LAN printer access</li>
+            <li>Real-time observability across all sites and devices</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section">
+      <h2 class="section-heading">How Cloud Print Mesh™ works</h2>
+      <p class="section-subtitle">
+        A simple, globally distributed pipeline that connects your applications, AI-powered label templates,
+        and on-prem printers with sub-second end-to-end latency.
+      </p>
+      <div class="grid-2">
+        <div class="card">
+          <h3>End-to-end flow</h3>
+          <p>From app to label in a single, resilient pipeline:</p>
+          <div class="ascii-diagram">
+[ User / ERP / WMS ]
+          │  (Describe or trigger label)
+          ▼
+[ AI Label Designer ]
+          │  (Generate + validate ZPL)
+          ▼
+[ Cloudflare Worker ]
+          │  (Route & log job)
+          ▼
+[ Durable Object Router ]
+          │  (Find target LMG + printer)
+          ▼  WebSocket
+[ LMG in Warehouse ]
+          │  TCP 9100
+          ▼
+[ Zebra Printer ]  →  Physical label
+          </div>
+        </div>
+        <div class="card">
+          <h3>Key components</h3>
+          <ul>
+            <li><strong>AI Label Generator</strong> – natural language to ZPL in seconds</li>
+            <li><strong>Cloudflare Edge</strong> – job intake, validation, routing</li>
+            <li><strong>Durable Objects</strong> – track LMG + printer state</li>
+            <li><strong>LMG (Local Management Gateway)</strong> – secure link to LAN printers</li>
+            <li><strong>Print Control Dashboard</strong> – global observability & replay</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section" id="features">
+      <h2 class="section-heading">Everything you need to modernize printing.</h2>
+      <p class="section-subtitle">
+        From AI-generated labels to SLA-backed routing and audit-ready logs, Cloud Print Mesh™
+        replaces legacy label tooling with a unified, cloud-native platform.
+      </p>
+      <div class="features-grid">
+        <div class="card feature-item">
+          <h3>AI label generator</h3>
+          <p>Describe your label in plain English. Get clean, Zebra-compliant ZPL with barcodes, text, and layout generated automatically.</p>
+        </div>
+        <div class="card feature-item">
+          <h3>Global routing at the edge</h3>
+          <p>Cloudflare Workers dispatch jobs to the correct warehouse and printer in milliseconds, with full logging and retries.</p>
+        </div>
+        <div class="card feature-item">
+          <h3>Real-time print observatory</h3>
+          <p>See every job, every printer, every site. Track latency, failures, volumes, and operator activity from a single dashboard.</p>
+        </div>
+        <div class="card feature-item">
+          <h3>ERP & WMS integrations</h3>
+          <p>Connect SAP, NetSuite, Acumatica, and custom systems via simple APIs. Replace ad-hoc scripts with a single print endpoint.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section class="section" id="pricing">
+      <h2 class="section-heading">Simple pricing based on printers.</h2>
+      <p class="section-subtitle">
+        No per-label charges. No per-user fees. Just pick the tier that matches your fleet size
+        and unlock the features you need.
+      </p>
+      <div class="pricing">
+        <div class="pricing-card">
+          <div>
+            <div class="pricing-name">Starter</div>
+            <div class="pricing-price">$199<span style="font-size:13px;color:var(--muted);"> / month</span></div>
+            <div class="pricing-meta">Up to 10 printers • 1 site</div>
+            <ul>
+              <li>AI label generator (basic)</li>
+              <li>Cloudflare-edge routing</li>
+              <li>LMG gateway for 1 warehouse</li>
+              <li>Job history (7 days)</li>
+              <li>Email support</li>
+            </ul>
+          </div>
+          <div class="pricing-cta">
+            <a href="#demo" class="btn btn-ghost" style="width:100%;justify-content:center;">Talk to sales</a>
+          </div>
+        </div>
+
+        <div class="pricing-card highlight">
+          <div>
+            <div class="pricing-name">Growth</div>
+            <div class="pricing-price">$499<span style="font-size:13px;color:var(--muted);"> / month</span></div>
+            <div class="pricing-meta">Up to 50 printers • up to 3 sites</div>
+            <ul>
+              <li>Advanced AI templates (unlimited)</li>
+              <li>Multi-site routing</li>
+              <li>Real-time dashboard</li>
+              <li>Label version control</li>
+              <li>Job history (30 days)</li>
+              <li>Priority support</li>
+            </ul>
+          </div>
+          <div class="pricing-cta">
+            <a href="#demo" class="btn btn-primary" style="width:100%;justify-content:center;">Book Growth demo</a>
+          </div>
+        </div>
+
+        <div class="pricing-card">
+          <div>
+            <div class="pricing-name">Pro</div>
+            <div class="pricing-price">$1,999<span style="font-size:13px;color:var(--muted);"> / month</span></div>
+            <div class="pricing-meta">Up to 200 printers • unlimited sites</div>
+            <ul>
+              <li>SLA-backed print routing</li>
+              <li>Printer health monitoring</li>
+              <li>Operator auditing & accountability</li>
+              <li>API access for ERP/WMS</li>
+              <li>Job history (180 days)</li>
+            </ul>
+          </div>
+          <div class="pricing-cta">
+            <a href="#demo" class="btn btn-ghost" style="width:100%;justify-content:center;">Book Pro demo</a>
+          </div>
+        </div>
+
+        <div class="pricing-card">
+          <div>
+            <div class="pricing-name">Enterprise</div>
+            <div class="pricing-price">From $5,000<span style="font-size:13px;color:var(--muted);"> / month</span></div>
+            <div class="pricing-meta">Unlimited printers • global fleets</div>
+            <ul>
+              <li>Dedicated routing cluster</li>
+              <li>Custom AI ZPL models</li>
+              <li>Compliance modes (GS1, FDA, aerospace)</li>
+              <li>SSO / SCIM & access controls</li>
+              <li>Job retention up to 1 year</li>
+              <li>Dedicated solutions engineer</li>
+            </ul>
+          </div>
+          <div class="pricing-cta">
+            <a href="#demo" class="btn btn-ghost" style="width:100%;justify-content:center;">Contact sales</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DEMO / ROI -->
+    <section class="section" id="demo">
+      <h2 class="section-heading">See it in action.</h2>
+      <p class="section-subtitle">
+        In a live demo, we’ll design a label in natural language, generate ZPL with AI, route it via Cloudflare,
+        and print it on a real Zebra printer while you watch the job land in the dashboard.
+      </p>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Demo flow</h3>
+          <ul>
+            <li>Describe a 4×6 shipping label in plain English</li>
+            <li>Watch AI generate ZPL and a pixel-perfect preview</li>
+            <li>Send the job to a real warehouse printer in under a second</li>
+            <li>See every step logged in the print observatory</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Customer ROI</h3>
+          <p>Teams routinely replace entire stacks of print servers and legacy label tools:</p>
+          <ul>
+            <li>Eliminate BarTender/NiceLabel licenses</li>
+            <li>Drop Windows print server maintenance</li>
+            <li>Remove VPN dependency from printing</li>
+            <li>Cut manual template engineering by 80%+</li>
+            <li>Standardize labels globally in weeks, not quarters</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section">
+      <div class="cta-section">
+        <h2>Take control of your warehouse printing.</h2>
+        <p>
+          No more print servers. No more brittle VPN tunnels. No more manual ZPL.
+          Just a clean, AI-driven, cloud-native print mesh that works.
+        </p>
+        <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:10px;">
+          <a href="#demo" class="btn btn-primary">Book a live demo</a>
+          <a href="#pricing" class="btn btn-ghost">Compare plans</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>© <span id="year"></span> Cloud Print Mesh™. All rights reserved.</div>
+      <div style="display:flex;gap:12px;">
+        <a href="#top">Back to top</a>
+        <span>·</span>
+        <a href="#">Privacy</a>
+        <span>·</span>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // simple year setter
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
